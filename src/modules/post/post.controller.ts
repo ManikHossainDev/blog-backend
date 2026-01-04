@@ -4,6 +4,7 @@ import { postService } from './post.service';
 import { Post } from '../../../generated/prisma/client';
 
 const createPost = async (req:Request, res:Response) => {
+  console.log(req.user)
    try{
         const result = await postService.createPost(req.body)
         res.status(201).json(result)
