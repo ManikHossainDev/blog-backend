@@ -46,7 +46,7 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignInUp: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      try{
+      try {
         const Verification = `${process.env.TRUSTED_ORIGINS}verify-email?token=${token}`;
 
         const htmlTemplate = `
@@ -138,10 +138,17 @@ export const auth = betterAuth({
           subject: `Hello ` + user.name + `, please verify your email address`,
           html: htmlTemplate,
         });
-      }catch(error){
-        console.log(error)
+      } catch (error) {
+        console.log(error);
         throw error;
       }
+    },
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
 });
