@@ -1,4 +1,4 @@
-import { Result } from './../../../generated/prisma/internal/prismaNamespace';
+
 import { Request, Response } from "express";
 import { postService } from './post.service';
 import { Post } from '../../../generated/prisma/client';
@@ -20,6 +20,19 @@ const createPost = async (req:Request, res:Response) => {
    }
 };
 
+const getPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await postService.getAllPosts();
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({
+      error: "Failed to retrieve posts",
+      details: err,
+    });
+  }
+}
+
 export const PostController = {
     createPost,
+    getPosts
 }
