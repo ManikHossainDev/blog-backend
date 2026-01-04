@@ -48,7 +48,8 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       try {
-        const Verification = `${process.env.TRUSTED_ORIGINS}verify-email?token=${token}`;
+        const baseUrl = process.env.TRUSTED_ORIGINS?.split(',')[0]?.trim() || '';
+        const Verification = `${baseUrl}verify-email?token=${token}`;
 
         const htmlTemplate = `
                <!DOCTYPE html>
