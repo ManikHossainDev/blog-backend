@@ -15,10 +15,23 @@ const createPost = async (data: Omit<Post, "id" | "createdAt" | "updatedAt">, us
 const getAllPosts = async (payload:{search: string | undefined}) => {
     const allposts = await prisma.post.findMany({
         where: {
-            title: {
+            OR: [
+                {
+                    title: {
                 contains: payload.search as string,
                 mode: "insensitive"
+            },
+                },
+            {content: {
+                contains: payload.search as string,
+                mode: "insensitive"
+            }},
+            {
+                tags: {
+                    has: payload.search as string   
+                }
             }
+            ]
         }
     });
     return allposts;
