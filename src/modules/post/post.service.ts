@@ -1,60 +1,67 @@
-import { Payload } from "./../../../generated/prisma/internal/prismaNamespace";
+import { Payload, PostWhereInput } from "./../../../generated/prisma/internal/prismaNamespace";
 import { Post } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
-  data: Omit<Post, "id" | "createdAt" | "updatedAt">,
-  userId: string
+    data: Omit<Post, "id" | "createdAt" | "updatedAt">,
+    userId: string
 ) => {
-  const result = await prisma.post.create({
-    data: {
-      ...data,
-      authorId: userId,
-    },
-  });
-  return result;
+    const result = await prisma.post.create({
+        data: {
+            ...data,
+            authorId: userId,
+        },
+    });
+    return result;
 };
 
-const getAllPosts = async (payload: {
-  search: string ;
-  tags: string[] | [];
-}) => {
-  const allposts = await prisma.post.findMany({
-    where: {
-      AND: [
-       payload.search &&  {
-          OR: [
-            {
-              title: {
-                contains: payload.search,
-                mode: "insensitive",
-              },
+const getAllPosts = async (
+    { search, tags }: {
+        search: string | undefined;
+        tags: string[] | [];
+    }) => {
+    const andConditions:PostWhereInput[] = [];
+    if (search) {
+        andConditions.push({
+            OR: [
+                {
+                    title: {
+                        contains: search,
+                        mode: "insensitive",
+                    },
+                },
+                {
+                    content: {
+                        contains: search,
+                        mode: "insensitive",
+                    },
+                },
+                {
+                    tags: {
+                        has: search,
+                    },
+                },
+            ],
+        });
+    }
+
+    if (tags.length > 0) {
+        andConditions.push({
+            tags: {
+                hasSome: tags,
             },
-            {
-              content: {
-                contains: payload.search,
-                mode: "insensitive",
-              },
-            },
-            {
-              tags: {
-                has: payload.search,
-              },
-            },
-          ],
+        }
+        );
+    }
+    const allposts = await prisma.post.findMany({
+        where: {
+            AND: andConditions,
         },
-        {
-          tags: {
-            hasSome: payload.tags,
-          },
-        },
-      ],
-    },
-  });
-  return allposts;
+    });
+    return allposts;
 };
 
 export const postService = {
-  createPost,
-  getAllPosts,
+    createPost,
+    getAllPosts,
 };
