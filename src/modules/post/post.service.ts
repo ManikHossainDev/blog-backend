@@ -15,50 +15,57 @@ const createPost = async (
     return result;
 };
 
-const getAllPosts = async (
-    { search, tags }: {
-        search: string | undefined;
-        tags: string[] | [];
-    }) => {
-    const andConditions:PostWhereInput[] = [];
-    if (search) {
+const getAllPosts = async ({
+  search,
+  tags,
+  isFeatureed,
+}: {
+  search: string | undefined;
+  tags: string[] | [];
+  isFeatureed?: boolean;
+}) => {
+  const andConditions: PostWhereInput[] = [];
+  if (search) {
+    andConditions.push({
+      OR: [
+        {
+          title: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          tags: {
+            has: search,
+          },
+        },
+      ],
+    });
+  }
+  if (tags.length > 0) {
+    andConditions.push({
+      tags: {
+        hasSome: tags,
+      },
+    });
+  }
+    if (typeof isFeatureed === 'boolean') {
         andConditions.push({
-            OR: [
-                {
-                    title: {
-                        contains: search,
-                        mode: "insensitive",
-                    },
-                },
-                {
-                    content: {
-                        contains: search,
-                        mode: "insensitive",
-                    },
-                },
-                {
-                    tags: {
-                        has: search,
-                    },
-                },
-            ],
+        isFeatured: isFeatureed,
         });
     }
-
-    if (tags.length > 0) {
-        andConditions.push({
-            tags: {
-                hasSome: tags,
-            },
-        }
-        );
-    }
-    const allposts = await prisma.post.findMany({
-        where: {
-            AND: andConditions,
-        },
-    });
-    return allposts;
+  const allposts = await prisma.post.findMany({
+    where: {
+      AND: andConditions,
+    },
+  });
+  return allposts;
 };
 
 export const postService = {
