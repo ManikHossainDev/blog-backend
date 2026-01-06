@@ -4,9 +4,10 @@ import { UserRole } from "../middlewares/auth";
 
 async function  seedAdmin () {
     try {
+      console.log("*** admin seeding started...")
       const adminData = {
         name: "Admin User",
-        email: "admin@gmail.com",
+        email: "admin1@gmail.com",
         role: UserRole.ADMIN,
         password: "admin123", 
       };
@@ -27,11 +28,22 @@ async function  seedAdmin () {
             body: JSON.stringify(adminData),
         });
 
-        
+        if (signUpAdmin.ok) {
+          await prisma.user.update({
+            where: {
+              email: adminData.email,
+            },
+            data: {
+              emailVerified: true,
+            },
+          });
 
-       
+          console.log("***** Success email verified");
+        }
 
     } catch (error) {
         console.error("Error seeding admin user:", error);
     }
 }
+
+seedAdmin();
