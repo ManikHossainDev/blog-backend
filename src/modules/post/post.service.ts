@@ -22,7 +22,7 @@ const getAllPosts = async ({
 }: {
   search: string | undefined;
   tags: string[] | [];
-  isFeatureed?: boolean;
+  isFeatureed?: boolean | undefined;
 }) => {
   const andConditions: PostWhereInput[] = [];
   if (search) {
