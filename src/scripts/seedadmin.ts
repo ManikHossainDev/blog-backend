@@ -1,7 +1,6 @@
 import { prisma } from "../lib/prisma";
 import { UserRole } from "../middlewares/auth";
 
-
 async function  seedAdmin () {
     try {
       console.log("*** admin seeding started...")
