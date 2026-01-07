@@ -1,18 +1,21 @@
-import { Payload, PostWhereInput } from "./../../../generated/prisma/internal/prismaNamespace";
+import {
+  Payload,
+  PostWhereInput,
+} from "./../../../generated/prisma/internal/prismaNamespace";
 import { Post, PostStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
-    data: Omit<Post, "id" | "createdAt" | "updatedAt">,
-    userId: string
+  data: Omit<Post, "id" | "createdAt" | "updatedAt">,
+  userId: string
 ) => {
-    const result = await prisma.post.create({
-        data: {
-            ...data,
-            authorId: userId,
-        },
-    });
-    return result;
+  const result = await prisma.post.create({
+    data: {
+      ...data,
+      authorId: userId,
+    },
+  });
+  return result;
 };
 
 const getAllPosts = async ({
@@ -25,7 +28,7 @@ const getAllPosts = async ({
   limit,
   skip,
   sortOrder,
-  sortBy
+  sortBy,
 }: {
   search: string | undefined;
   tags: string[] | [];
@@ -35,8 +38,8 @@ const getAllPosts = async ({
   page: number;
   limit: number;
   skip: number;
-  sortBy?: string | undefined;
-  sortOrder?: string | undefined;
+  sortBy?:string;
+  sortOrder?:string;
 }) => {
   const andConditions: PostWhereInput[] = [];
 
@@ -92,14 +95,14 @@ const getAllPosts = async ({
     where: {
       AND: andConditions,
     },
-    orderBy: sortBy && sortOrder ? {
+    orderBy: {
       [sortBy]: sortOrder,
-    }: { createdAt: "desc" }
+    },
   });
   return allposts;
 };
 
 export const postService = {
-    createPost,
-    getAllPosts,
+  createPost,
+  getAllPosts,
 };
