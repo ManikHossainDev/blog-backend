@@ -21,12 +21,16 @@ const getAllPosts = async ({
   isFeatureed,
   status,
   authorId,
+  page,
+  limit,
 }: {
   search: string | undefined;
   tags: string[] | [];
   isFeatureed?: boolean | undefined;
   status: PostStatus | undefined;
   authorId: string | undefined;
+  page: number;
+  limit: number;
 }) => {
   const andConditions: PostWhereInput[] = [];
   if (search) {
