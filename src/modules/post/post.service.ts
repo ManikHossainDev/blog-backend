@@ -30,12 +30,12 @@ const getAllPosts = async ({
   sortOrder,
   sortBy,
 }: {
-  search: string | undefined;
-  tags: string[] | [];
-  isFeatureed?: boolean | undefined;
-  status: PostStatus | undefined;
-  authorId: string | undefined;
-  page: number;
+  search: string | undefined,
+  tags: string[] | [],
+  isFeatureed?: boolean | undefined,
+  status: PostStatus | undefined,
+  authorId: string | undefined,
+  page: number,
   limit: number;
   skip: number;
   sortBy?:string;
@@ -89,7 +89,7 @@ const getAllPosts = async ({
     });
   }
 
-  const allposts = await prisma.post.findMany({
+  const allPosts = await prisma.post.findMany({
     take: limit,
     skip: skip,
     where: {
@@ -99,7 +99,22 @@ const getAllPosts = async ({
       [sortBy]: sortOrder,
     },
   });
-  return allposts;
+  
+  const total = await prisma.post.count({
+    where: {
+      AND: andConditions,
+    },
+  });
+
+  return { 
+    data:allPosts,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    }
+  };
 };
 
 export const postService = {
