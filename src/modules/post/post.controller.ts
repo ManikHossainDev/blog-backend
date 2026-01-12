@@ -79,12 +79,12 @@ const getPostById = async (req: Request, res: Response) => {
 const getMyPost = async (req: Request, res: Response) => {
   console.log(req)
   try {
-    const User = req.user
-    if (!User) {
+    const user = req.user
+    console.log(user)
+    if (!user) {
       throw new Error("You are Unauthorized!");
     }
-    console.log("USERS DATA", User);
-    const post = await postService.getPostById(User.id as string);
+    const post = await postService.getMyPost(user.id as string);
     res.status(200).json(post);
   } catch (err) {
     res.status(400).json({
