@@ -100,8 +100,8 @@ const updateComment = async (commentId:string, data:{content?:string, status?:Co
 }
 
 const moderateComment = async (id:string, data: {status:CommentStatus}) => {
-  //  console.log(`moderate comment ${id} how are you brothers ${data?.status}`)
-  const commentData = await prisma.comment.findUnique({
+   console.log(`moderate comment ${id} how are you brothers ${data?.status}`)
+  const commentData = await prisma.comment.findUniqueOrThrow({
     where: {
       id
     },
