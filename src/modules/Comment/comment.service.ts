@@ -1,4 +1,4 @@
-import { CommentStatus } from "../../../generated/prisma/enums";
+import { CommentStatus } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
 
 const createComment = async (payload: {
@@ -39,6 +39,8 @@ const getCommentById = async (commentId:string) => {
         }
     })
 }
+
+
 
 const getCommentsByAuthor = async (authorId: string) => {
    return await prisma.comment.findMany({
@@ -100,10 +102,27 @@ const updateComment = async (commentId:string, data:{content?:string, status?:Co
    });
 }
 
+
+const moderateComment = async (id:string, data: {status:CommentStatus}) => {
+  //  console.log(`moderate comment ${id} how are you brothers ${data?.status}`)
+   await prisma.comment.findUnique({
+    where: {
+      id
+    }
+  })
+  return await prisma.comment.update({
+    where:{
+      id
+    },
+    data
+  })
+}
+
 export const commentService = {
   createComment,
   getCommentById,
   getCommentsByAuthor,
   deleteComment,
-  updateComment
+  updateComment,
+  moderateComment,
 };
