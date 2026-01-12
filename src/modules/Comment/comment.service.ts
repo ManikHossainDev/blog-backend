@@ -1,5 +1,6 @@
 import { CommentStatus } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
+import { error } from 'node:console';
 
 const createComment = async (payload: {
   content: string;
@@ -39,8 +40,6 @@ const getCommentById = async (commentId:string) => {
         }
     })
 }
-
-
 
 const getCommentsByAuthor = async (authorId: string) => {
    return await prisma.comment.findMany({
@@ -105,11 +104,18 @@ const updateComment = async (commentId:string, data:{content?:string, status?:Co
 
 const moderateComment = async (id:string, data: {status:CommentStatus}) => {
   //  console.log(`moderate comment ${id} how are you brothers ${data?.status}`)
-   await prisma.comment.findUnique({
+  const commentData = await prisma.comment.findUnique({
     where: {
       id
+    },
+    select:{
+      id:true,
+      status:true
     }
-  })
+  });
+  if(commentData?.status === data.status){
+    throw new Error(`your provided status (${data.status}) is already up to date`)
+  }
   return await prisma.comment.update({
     where:{
       id
