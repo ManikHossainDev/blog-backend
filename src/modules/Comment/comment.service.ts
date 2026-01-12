@@ -1,6 +1,5 @@
 import { CommentStatus } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
-import { error } from 'node:console';
 
 const createComment = async (payload: {
   content: string;
@@ -78,7 +77,6 @@ const deleteComment = async (commentId:string, authorId:string) => {
    })
 };
 
-
 const updateComment = async (commentId:string, data:{content?:string, status?:CommentStatus}, authorId:string) => {
    const commentData = await prisma.comment.findFirst({
      where: {
@@ -100,7 +98,6 @@ const updateComment = async (commentId:string, data:{content?:string, status?:Co
      data
    });
 }
-
 
 const moderateComment = async (id:string, data: {status:CommentStatus}) => {
   //  console.log(`moderate comment ${id} how are you brothers ${data?.status}`)

@@ -1,8 +1,8 @@
-
 import express, {  Router } from "express";
-import { commentController } from "./comment.controller";
-import auth, { UserRole } from "../../middlewares/auth";
 
+import { commentController } from "./comment.controller";
+
+import auth, { UserRole } from "../../middlewares/auth";
 
 const router = express.Router();
 
@@ -14,11 +14,7 @@ router.post("/", auth(UserRole.ADMIN, UserRole.USER) , commentController.createC
 
 router.delete("/:commentId", auth(UserRole.ADMIN, UserRole.USER) ,commentController.deleteCommentById)
 
-router.patch(
-  "/:commentId",
-  auth(UserRole.ADMIN, UserRole.USER),
-  commentController.updateComment
-);
+router.patch("/:commentId", auth(UserRole.ADMIN, UserRole.USER), commentController.updateComment);
 
 router.patch("/commentId/moderate", auth(UserRole.ADMIN), commentController.moderateComment)
 
