@@ -7,6 +7,10 @@ router.get(
   auth(UserRole.ADMIN, UserRole.USER),
   PostController.getMyPosts
 );
+router.patch("/:postId",
+    auth(UserRole.ADMIN, UserRole.USER),
+    PostController.updateMyPosts
+)
 router.get("/", PostController.getPosts);
 router.post("/", auth( UserRole.USER, UserRole.ADMIN), PostController.createPost);
 router.get("/:id", PostController.getPostById);

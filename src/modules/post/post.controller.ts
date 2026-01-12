@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { postService } from "./post.service";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
+import { auth } from "../../lib/auth";
 
 const createPost = async (req: Request, res: Response) => {
   console.log(req.user);
@@ -75,7 +76,6 @@ const getPostById = async (req: Request, res: Response) => {
   }
 };
 
-
 const getMyPosts = async (req: Request, res: Response) => {
   try {
     const user = req.user;
@@ -92,9 +92,28 @@ const getMyPosts = async (req: Request, res: Response) => {
   }
 };
 
+const updateMyPosts = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("Your are unauthorized!");
+    }
+    const {postId} = req.params;
+    const posts = await postService.updateMyPost(postId as string, req.body, user.id);
+    return res.status(200).json(posts);
+  } catch (err) {
+    return res.status(500).json({
+      error: "Post update failed",
+      message: err instanceof Error ? err.message : "post update failed",
+    });
+  }
+};
+
+
 export const PostController = {
   createPost,
   getPosts,
   getPostById,
-  getMyPosts
+  getMyPosts,
+  updateMyPosts,
 };
