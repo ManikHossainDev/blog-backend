@@ -227,10 +227,12 @@ const updateMyPost = async (postId:string, data:Partial<Post>, authorId:string, 
      }
    })
 
-   if (!isAdmin && (postData.authorId === authorId)) {
-     throw new Error("you are not the owner/create of the post!");
+   // Allow admin to update any post, but regular users can only update their own posts
+   if (!isAdmin && postData.authorId !== authorId) {
+     throw new Error("You are not the owner/creator of the post!");
    }
 
+   // Prevent non-admins from updating isFeatured property
    if(!isAdmin){
      delete data.isFeatured
    }

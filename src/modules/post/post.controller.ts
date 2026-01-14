@@ -97,11 +97,11 @@ const updateMyPosts = async (req: Request, res: Response) => {
   try {
     const user = req.user;
     if (!user) {
-      throw new Error("Your are unauthorized!");
+      return res.status(401).json({ error: "You are unauthorized!" });
     }
     const {postId} = req.params;
     const isAdmin = user.role === UserRole.ADMIN
-    const posts = await postService.updateMyPost(postId as string, req.body, user.id, isAdmin);
+    const posts = await postService.updateMyPost(postId as string, req.body, user.id as string, isAdmin);
     return res.status(200).json(posts);
   } catch (err) {
     return res.status(500).json({
