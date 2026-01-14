@@ -227,7 +227,7 @@ const updateMyPost = async (postId:string, data:Partial<Post>, authorId:string, 
      }
    })
 
-   if (!isAdmin && postData.authorId === authorId) {
+   if (!isAdmin && (postData.authorId === authorId)) {
      throw new Error("you are not the owner/create of the post!");
    }
 
