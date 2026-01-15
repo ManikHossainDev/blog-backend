@@ -1,5 +1,4 @@
 import {
-  Payload,
   PostWhereInput,
 } from "./../../../generated/prisma/internal/prismaNamespace";
 import { CommentStatus, Post, PostStatus } from "../../../generated/prisma/client";
@@ -215,7 +214,6 @@ const getMyPosts = async (authorId: string) => {
   // } 
 };
 
-
 const updateMyPost = async (postId:string, data:Partial<Post>, authorId:string, isAdmin:boolean) => {
    const postData = await prisma.post.findUniqueOrThrow({
      where: {
@@ -269,30 +267,23 @@ const deletePost = async (postId:string, authorId:string, isAdmin:boolean) => {
 
 const getStats = async () => {
       return await prisma.$transaction(async (tx) => {
-        const totalPosts = await  tx.post.count();
-        const publishedPosts = await tx.post.count({
-          where: {
-            status: PostStatus.PUBLISHED
-          }
-        });
-        const draftPosts = await tx.post.count({
-          where: {
-            status: PostStatus.DRAFT,
-          },
-        });
-        const archivedPosts = await tx.post.count({
-          where: {
-            status: PostStatus.ARCHIVED,
-          },
-        });
-
+        const [totalPosts, publishedPosts, draftPosts, archivedPosts, totalComments, approvedComment ]= await Promise.all([
+        await  tx.post.count(),
+        await tx.post.count({where: {status: PostStatus.PUBLISHED}}),
+        await tx.post.count({where: {status: PostStatus.DRAFT,},}),
+        await tx.post.count({where: {status: PostStatus.ARCHIVED,},}),
+        await tx.comment.count(),
+        await tx.comment.count({where:{status:CommentStatus.APPROVED}})
+        ]);
         return {
           totalPosts,
           publishedPosts,
           draftPosts,
-          archivedPosts
+          archivedPosts,
+          totalComments,
+          approvedComment
         }
-      })
+    })
 }
 
 export const postService = {
