@@ -5,6 +5,7 @@ import { auth } from "./lib/auth";
 import cors from "cors";
 import { commentRouter } from "./modules/Comment/Comment.route";
 import errorHandler from "./middlewares/globalErrorHandler";
+import { notFound } from "./middlewares/notFound";
 
 const app:Application = express();
 
@@ -28,5 +29,7 @@ app.get("/", (req, res) => {
 })
 
 app.use(errorHandler)
+
+app.use(notFound)
 
 export default app
