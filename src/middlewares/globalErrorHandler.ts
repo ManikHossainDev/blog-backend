@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
+import { prisma } from "../lib/prisma";
 
 function errorHandler(
   err: any,
@@ -15,11 +16,13 @@ function errorHandler(
   if(err instanceof Prisma.PrismaClientInitializationError){
       statusCode = 400;
       errorMessage = "you provide incorrect field type or missing fields!"
-  }else if(err instanceof Prisma.PrismaClientKnownRequestError){
+  }
+  else if(err instanceof Prisma.PrismaClientKnownRequestError){
     if(err.code === "P2025"){
       statusCode = 400;
       errorMessage = "An operation failed because it depends on one or more records that were required but not found."
-    }else if(err.code === "P2002"){
+    }
+    else if(err.code === "P2002"){
       statusCode = 400;
       errorMessage = "Duplicate key error" 
     }else if(err.code === "P2003"){
@@ -27,6 +30,21 @@ function errorHandler(
       errorMessage = "Foreign key constraint failed"
     }
   }
+  else if(err instanceof Prisma.PrismaClientUnknownRequestError){
+    statusCode = 500;
+    errorMessage = "error occurred during query execution"
+  }
+  else if ( err instanceof Prisma.PrismaClientInitializationError){
+     if(err.errorCode === "P1000"){
+      statusCode = 401;
+      errorMessage = "Authentication failed. please check your Credentials!"
+     }
+     else if (err.errorCode === "P1001"){
+      statusCode: 400;
+      errorMessage = "Can't reach database server"
+     }
+  }
+
 
   res.status(statusCode);
   res.json({
