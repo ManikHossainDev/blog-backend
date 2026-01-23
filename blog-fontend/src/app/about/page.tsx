@@ -1,3 +1,7 @@
+
+
+export const dynamic = "force-dynamic"; 
+
 const Page = async () => {
     await new Promise((resolve) => setTimeout(resolve, 4000));
     // throw new Error("Something went wrong")
