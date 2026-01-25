@@ -9,7 +9,6 @@ async function main() {
         console.log("Connected to the database successfully.");
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`)
-            console.log('manik hossain')
         })
     }catch(error){
         console.error("An error occurred", error);
@@ -17,5 +16,4 @@ async function main() {
         process.exit(1);
     }
 }
-
 main()
