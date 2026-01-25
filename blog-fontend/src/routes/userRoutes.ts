@@ -1,5 +1,6 @@
+import { Route } from "@/types";
 
-export const UserRoutes = [
+export const UserRoutes:Route[] = [
   {
     title: "Blog Management",
     items: [
