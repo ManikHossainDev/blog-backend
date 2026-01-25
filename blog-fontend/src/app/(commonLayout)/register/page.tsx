@@ -1,9 +1,11 @@
-const Page = () => {
- return (
- <div>
- <h2>Welcome to the Page page register </h2>
- </div>
- );
-};
+import { SignupForm } from "@/components/modules/authentication/signup-form"
 
-export default Page;
+export default function Page() {
+  return (
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <SignupForm />
+      </div>
+    </div>
+  )
+}
